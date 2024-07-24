@@ -8,10 +8,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_SECRET: '205062'
-      NEXT_PUBLIC_JWT_SECRET: '205062'
-      NEXT_PUBLIC_API_URL: 'http://localhost:5000/api'
-      NEXT_PUBLIC_URL: 'http://localhost:3000'
+      NEXT_PUBLIC_API_URL: 'http://192.168.1.204:5000/api'  # Sử dụng tên dịch vụ nội bộ
+      NEXT_PUBLIC_URL: 'http://192.168.1.204:3000'
     depends_on:
       - flask
     networks:
@@ -28,7 +26,7 @@ services:
       SECRET_KEY: '205062'
       DATABASE_URL: 'postgresql://postgres:205062@postgres:5432/verification_management'
       JWT_SECRET_KEY: '205062'
-      CLIENT_BASE_URL: http://localhost:3000
+      CLIENT_BASE_URL: 'http://192.168.1.204:3000'
     depends_on:
       - postgres
     networks:

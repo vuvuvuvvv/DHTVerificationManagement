@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  nextjs:
+    build:
+      context: ./nextjs-verification-management
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_SECRET: '205062'
+      NEXT_PUBLIC_JWT_SECRET: '205062'
+      NEXT_PUBLIC_API_URL: 'http://localhost:5000/api'
+      NEXT_PUBLIC_URL: 'http://localhost:3000'
+    depends_on:
+      - flask
+    networks:
+      - next-flask
+
+  flask:
+    build:
+      context: ./flask-verification-management
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_ENV: development
+      SECRET_KEY: '205062'
+      DATABASE_URL: 'postgresql://postgres:205062@postgres:5432/verification_management'
+      JWT_SECRET_KEY: '205062'
+      CLIENT_BASE_URL: http://localhost:3000
+    depends_on:
+      - postgres
+    networks:
+      - next-flask
+      - flask-db
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: verification_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 205062
+    ports:
+      - "5432:5432"
+    networks:
+      - flask-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  next-flask:
+  flask-db:
+
+volumes:
+  postgres_data:

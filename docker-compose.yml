@@ -44,12 +44,13 @@ services:
     networks:
       - flask-db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      # - pgdata:/var/lib/postgresql/data
+      - F:\PostgreSQL\16\data-docker-backup:/var/lib/postgresql/data
+
+# volumes:
+#   pgdata:
+#     driver: local
 
 networks:
   next-flask:
   flask-db:
-
-volumes:
-  postgres_data:
-    driver: local

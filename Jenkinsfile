@@ -6,7 +6,6 @@ pipeline {
     stages {
         stage('Clone Repositories') {
             steps {
-                echo 'Cloning repositories...'
                 dir('flask-verification-management') {
                     git branch: 'dev', credentialsId: 'github-credential', url: 'https://github.com/vuvuvuvvv/flask-verification-management.git'
                 }
@@ -18,19 +17,13 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                script {
-                    echo 'Building Docker images...'
-                    sh 'docker-compose -f ${COMPOSE_FILE} build'
-                }
+                sh label: '', script: 'docker-compose -f ${COMPOSE_FILE} build'
             }
         }
         stage('Deploy and Run Containers') {
             steps {
-                script {
-                    echo 'Deploying and running containers...'
-                    sh 'docker-compose -f ${COMPOSE_FILE} down'
-                    sh 'docker-compose -f ${COMPOSE_FILE} up -d'
-                }
+                sh label: '', script: 'docker-compose -f ${COMPOSE_FILE} down'
+                sh label: '', script: 'docker-compose -f ${COMPOSE_FILE} up -d'
             }
         }
     }

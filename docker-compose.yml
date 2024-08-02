@@ -2,13 +2,16 @@ version: '3.8'
 
 services:
   nextjs:
-    build:
-      context: ./nextjs-verification-management
-      dockerfile: Dockerfile
+    image: vuvuvuvvv/dhtverificationmanagement-nextjs:latest
+    # build:
+    #   context: ./nextjs-verification-management
+    #   dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    env_file:
+      - ./nextjs-verification-management/.env.local
     environment:
-      NEXT_PUBLIC_API_URL: 'http://192.168.1.204:5000/api'  # Sử dụng tên dịch vụ nội bộ
+      NEXT_PUBLIC_API_URL: 'http://192.168.1.204:5000/api'
       NEXT_PUBLIC_URL: 'http://192.168.1.204:3000'
     depends_on:
       - flask
@@ -16,17 +19,27 @@ services:
       - next-flask
 
   flask:
-    build:
-      context: ./flask-verification-management
-      dockerfile: Dockerfile
+    image: vuvuvuvvv/dhtverificationmanagement-flask:latest
+    # build:
+    #   context: ./flask-verification-management
+    #   dockerfile: Dockerfile
     ports:
       - "5000:5000"
+    env_file:
+      - ./flask-verification-management/.env
     environment:
-      FLASK_ENV: development
+      # FLASK_ENV: development
       SECRET_KEY: '205062'
       DATABASE_URL: 'postgresql://postgres:205062@postgres:5432/verification_management'
       JWT_SECRET_KEY: '205062'
       CLIENT_BASE_URL: 'http://192.168.1.204:3000'
+      COMPANY_NAME: 'DHT Company'
+      SENDER_NAME: 'DHT no-reply'
+      ADMIN_MAIL: 'smtpbotnoreply@gmail.com'
+      ADMIN_TEL: '19006868'
+      SENDER_MAIL: 'smtpbotnoreply@gmail.com'
+      MAIL_USERNAME: 'smtpbotnoreply@gmail.com'
+      MAIL_PASSWORD: 'hlgumagnwrotjgad'
     depends_on:
       - postgres
     networks:
@@ -34,7 +47,8 @@ services:
       - flask-db
 
   postgres:
-    image: postgres:latest
+    image: dhtverificationmanagement-postgres:latest
+    # image: postgres:latest
     environment:
       POSTGRES_DB: verification_management
       POSTGRES_USER: postgres

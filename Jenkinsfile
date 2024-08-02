@@ -29,9 +29,19 @@ pipeline {
     }
 
     post {
-        always {
+        success {
             mail bcc: '', 
                 body: "Build pipeline successfully.\n\n" +
+                    "Detail: ${env.BUILD_URL}",
+                cc: '', 
+                from: '', 
+                replyTo: '', 
+                subject: "Jenkins Build Report: ${env.JOB_NAME} #${env.BUILD_NUMBER}", 
+                to: 'nguyenvu260502@gmail.com'
+        }
+        failure {
+            mail bcc: '', 
+                body: "Build pipeline failed.\n\n" +
                     "Detail: ${env.BUILD_URL}",
                 cc: '', 
                 from: '', 

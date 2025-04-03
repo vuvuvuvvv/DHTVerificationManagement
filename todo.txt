@@ -1,0 +1,92 @@
+1. Thêm sai số đã chạy vào TableInputDongHoInfo
+2. Xem xét, nghiên cứu thêm cột "Ghi chú Mã Quản lý"
+3. Thêm vào context KiemDinh: Mf, U 
+4. Sửa mã khhi làm hiệu chuẩn: FMS.HC 
+5. Xem xét thêm lại cột hiệu lực
+6. In thông tin bằng PDM: -> Reject
+    SELECT *
+    FROM public.pdm
+    WHERE so_qd_pdm IN (
+        SELECT so_qd_pdm
+        FROM public.pdm
+        GROUP BY so_qd_pdm
+        HAVING COUNT(*) > 1
+    )
+    ORDER BY so_qd_pdm, ngay_qd_pdm;
+-----
+-- Mf = trung bình (Vc/Vdh các lần 1 lluong)
+-- U = 2 
+
+
+
+
+7. Check xem nếu lưu có 1 hoặc nhiều cái k thành công
+
+
+
+-- check ngày hiieuej lực 
+-- tải biên bản - done
+-- lưu tạm chưa hoạt động   - DONE
+-- chi tiết hiệu chuẩn kế quả k hiện - DONE
+
+
+--- làm 1 api/getme trong trường hợp cookie bị xóa. Nếu trên hệ thống vẫn còn user -> login
+
+--- Auth: lỗi cookie không được gọi trong be. Cách:
+    - Thay vì set cookie trong BE, dùng Next để quản lý cookie:
+    Thay vì gọi trực tiếp API của backend (BE) từ frontend, bạn nên gọi API của Next.js trước
+    1️⃣ API route trong Next.js
+    Tạo file /pages/api/auth/login.ts:
+        import type { NextApiRequest, NextApiResponse } from 'next';
+        import axios from 'axios';
+        import { serialize } from 'cookie';
+
+        export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+            if (req.method !== 'POST') {
+                return res.status(405).json({ message: 'Method Not Allowed' });
+            }
+
+            try {
+                const response = await axios.post('http://localhost:5000/api/auth/login', req.body, {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true, // Cho phép nhận cookie từ backend
+                });
+
+                const { accessToken, refreshToken } = response.data;
+
+                // Set cookie HTTP-only để lưu token
+                res.setHeader('Set-Cookie', [
+                    serialize('accessToken', accessToken, {
+                        httpOnly: true,
+                        secure: false, // Chuyển thành true nếu dùng HTTPS
+                        sameSite: 'Strict',
+                        path: '/',
+                    }),
+                    serialize('refreshToken', refreshToken, {
+                        httpOnly: true,
+                        secure: false,
+                        sameSite: 'Strict',
+                        path: '/',
+                    }),
+                ]);
+
+                return res.status(200).json({ message: 'Login successful' });
+            } catch (error: any) {
+                return res.status(error?.response?.status || 500).json({ message: 'Login failed' });
+            }
+        }
+    ➡️ Khi frontend gọi /api/auth/login, Next sẽ gọi tiếp BE và gán JWT vào cookie (HTTP-only).
+    2️⃣ Gọi API từ frontend
+    Trong Next.js, thay vì gọi http://localhost:5000/api/auth/login, bạn gọi:
+    const login = async () => {
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ username: 'test', password: '123' }),
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // Quan trọng để gửi cookie
+        });
+        const data = await response.json();
+        console.log(data);
+    };
+    ➡️ Frontend chỉ gọi Next API, giúp tránh lỗi CORS.
+-- hoặc cloudflare turnnel or Ngrok

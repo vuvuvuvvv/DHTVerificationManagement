@@ -1,9 +1,11 @@
 services:
   nextjs:
-    image: vuvuvuvvv/dhtverificationmanagement-nextjs:latest
-    # build:
-    #   context: ./nextjs-verification-management
-    #   dockerfile: Dockerfile
+    # image: vuvuvuvvv/dhtverificationmanagement-nextjs:latest
+    container_name: dht_fe_nextjs
+    image: fe_nextjs_dht_vfm:latest
+    build:
+      context: ./nextjs-verification-management
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     env_file:
@@ -15,12 +17,17 @@ services:
       - flask
     networks:
       - next-flask
+    volumes:
+      - ./nextjs-verification-management:/app  # Bind thư mục code vào container
+      - /app/node_modules  # Tránh ghi đè node_modules trong container
 
   flask:
-    image: vuvuvuvvv/dhtverificationmanagement-flask:latest
-    # build:
-    #   context: ./flask-verification-management
-    #   dockerfile: Dockerfile
+    # image: vuvuvuvvv/dhtverificationmanagement-flask:latest
+    container_name: dht_be_flask
+    image: be_flask_dht_vfm:latest
+    build:
+      context: ./flask-verification-management
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     env_file:
@@ -43,10 +50,14 @@ services:
     networks:
       - next-flask
       - flask-db
+    volumes:
+      - ./flask-verification-management:/app  # Bind thư mục code vào container
+      - /app/venv  # Tránh ghi đè node_modules trong container
 
   postgres:
-    image: dhtverificationmanagement-postgres:latest
-    # image: postgres:latest
+    # image: dhtverificationmanagement-postgres:latest
+    container_name: dht_db_postgres
+    image: postgres:latest
     environment:
       POSTGRES_DB: verification_management
       POSTGRES_USER: postgres
@@ -56,11 +67,10 @@ services:
     networks:
       - flask-db
     volumes:
-      # - pgdata:/var/lib/postgresql/data
-      - F:\PostgreSQL\16\data-docker-backup:/var/lib/postgresql/data
+      - dht_vfm_data:/var/lib/postgresql/data
 
-# volumes:
-#   pgdata:
+volumes:
+  dht_vfm_data:
 #     driver: local
 
 networks:

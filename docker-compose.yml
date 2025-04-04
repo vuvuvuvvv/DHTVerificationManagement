@@ -11,8 +11,8 @@ services:
     env_file:
       - ./nextjs-verification-management/.env.local
     environment:
-      NEXT_PUBLIC_API_URL: 'http://192.168.1.204:5000/api'
-      NEXT_PUBLIC_URL: 'http://192.168.1.204:3000'
+      NEXT_PUBLIC_API_URL: 'http://192.168.1.111:5000/api'
+      NEXT_PUBLIC_URL: 'http://192.168.1.111:3000'
     depends_on:
       - flask
     networks:
@@ -37,7 +37,7 @@ services:
       SECRET_KEY: '205062'
       DATABASE_URL: 'postgresql://postgres:205062@postgres:5432/verification_management'
       JWT_SECRET_KEY: '205062'
-      CLIENT_BASE_URL: 'http://192.168.1.204:3000'
+      CLIENT_BASE_URL: 'http://192.168.1.111:3000'
       COMPANY_NAME: 'DHT Company'
       SENDER_NAME: 'DHT no-reply'
       ADMIN_MAIL: 'smtpbotnoreply@gmail.com'

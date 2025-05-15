@@ -24,6 +24,33 @@
 
 
 
+
+
+8. Thêm số lượng đho
+9. Thêm auto nhập số
+10. Thêm tùy chọn nhanh: Chọn nhanh vỏ ngoài, độ kín và độ ổn định chỉ số
+
+
+
+
+
+
+
+
+
+tạo menu setting
+- cài nhiệt độ mẫu
+- sử dụng bình chuẩn
+
+
+
+
+
+
+
+
+
+
 -- check ngày hiieuej lực 
 -- tải biên bản - done
 -- lưu tạm chưa hoạt động   - DONE
@@ -90,3 +117,6 @@
     };
     ➡️ Frontend chỉ gọi Next API, giúp tránh lỗi CORS.
 -- hoặc cloudflare turnnel or Ngrok
+
+
+

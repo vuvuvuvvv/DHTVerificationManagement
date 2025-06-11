@@ -1,33 +1,32 @@
 services:
   nextjs:
     # image: vuvuvuvvv/dhtverificationmanagement-nextjs:latest
-    container_name: vfm_fe_nextjs
-    image: vfm_fe_nextjs:latest
-    build:
-      context: ./nextjs-verification-management
-      dockerfile: Dockerfile
+    container_name: dht_fe_nextjs
+    image: vuvuvuvvvwork/dht-vfm:fe_nextjs
+    #build:
+    #  context: ./nextjs-verification-management
+    #  dockerfile: Dockerfile
     ports:
       - "3000:3000"
     env_file:
       - ./nextjs-verification-management/.env.local
     environment:
-      NEXT_PUBLIC_API_URL: 'http://192.168.1.232:5000/api'
-      NEXT_PUBLIC_URL: 'http://192.168.1.232:3000'
+      NEXT_PUBLIC_API_URL: 'http://[2602:ff16:14:120d::1]:5000/api'
+      NEXT_PUBLIC_URL: 'http://[2602:ff16:14:120d::1]:3000'
     depends_on:
       - flask
     networks:
       - next-flask
     volumes:
-      - ./nextjs-verification-management:/app  # Bind thư mục code vào container
-      - /app/node_modules  # Tránh ghi đè node_modules trong container
+      - ./nextjs-verification-management:/app  # Bind thÆ° má»¥c code vÃ o container
+      - /app/node_modules  # TrÃ¡nh ghi Ä‘Ã¨ node_modules trong container
 
   flask:
-    # image: vuvuvuvvv/dhtverificationmanagement-flask:latest
     container_name: dht_be_flask
-    image: vfm_be_flask:latest
-    build:
-      context: ./flask-verification-management
-      dockerfile: Dockerfile
+    image: vuvuvuvvvwork/dht-vfm:be_flask
+    #build:
+    #  context: ./flask-verification-management
+    #  dockerfile: Dockerfile
     ports:
       - "5000:5000"
     env_file:
@@ -36,8 +35,8 @@ services:
       # FLASK_ENV: development
       SECRET_KEY: 'dht@123'
       DATABASE_URL: 'postgresql://postgres:123123@postgres:5432/verification_management'
-      JWT_SECRET_KEY: 'dht@123'
-      CLIENT_BASE_URL: 'http://192.168.1.232:3000'
+      JWT_SECRET_KEY: '123123'
+      CLIENT_BASE_URL: 'http://[2602:ff16:14:120d::1]:3000'
       COMPANY_NAME: 'DHT Company'
       SENDER_NAME: 'DHT no-reply'
       ADMIN_MAIL: 'smtpbotnoreply@gmail.com'
@@ -51,19 +50,19 @@ services:
       - next-flask
       - flask-db
     volumes:
-      - ./flask-verification-management:/app  # Bind thư mục code vào container
-      - /app/venv  # Tránh ghi đè node_modules trong container
+      - ./flask-verification-management:/app  # Bind thÆ° má»¥c code vÃ o container
+      - /app/venv  # TrÃ¡nh ghi Ä‘Ã¨ node_modules trong container
 
   postgres:
     # image: dhtverificationmanagement-postgres:latest
-    container_name: vfm_db_postgres
+    container_name: dht_db_postgres
     image: postgres:latest
     environment:
       POSTGRES_DB: verification_management
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123123
     ports:
-      - "5432:5432"   #aaaa:bbbb - aaaa: port of local, bbbb: defaul port of Postgress
+      - "5432:5432"
     networks:
       - flask-db
     volumes:

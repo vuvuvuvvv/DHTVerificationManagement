@@ -8,9 +8,11 @@ services:
     #  dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    env_file:
-      - ./nextjs-verification-management/.env.local
+    # env_file:
+    #   - ./nextjs-verification-management/.env.local
     environment:
+      NEXT_PUBLIC_SECRET: 'next_vfm_2024'
+      NEXT_PUBLIC_JWT_SECRET: 'sk_vfm_2024'
       NEXT_PUBLIC_API_URL: 'http://[2602:ff16:14:120d::1]:5000/api'
       NEXT_PUBLIC_URL: 'http://[2602:ff16:14:120d::1]:3000'
     depends_on:
@@ -29,13 +31,15 @@ services:
     #  dockerfile: Dockerfile
     ports:
       - "5000:5000"
-    env_file:
-      - ./flask-verification-management/.env
+    # env_file:
+    #   - ./flask-verification-management/.env
     environment:
       # FLASK_ENV: development
       SECRET_KEY: 'dht@123'
       DATABASE_URL: 'postgresql://postgres:123123@postgres:5432/verification_management'
-      JWT_SECRET_KEY: '123123'
+      JWT_SECRET_KEY: 'sk_vfm_2024'
+      EXPIRE_TIME_ACT: 30    # minutes
+      EXPIRE_TIME_RFT: 7     # days
       CLIENT_BASE_URL: 'http://[2602:ff16:14:120d::1]:3000'
       COMPANY_NAME: 'DHT Company'
       SENDER_NAME: 'DHT no-reply'
@@ -50,11 +54,10 @@ services:
       - next-flask
       - flask-db
     volumes:
-      - ./flask-verification-management:/app  # Bind thÆ° má»¥c code vÃ o container
-      - /app/venv  # TrÃ¡nh ghi Ä‘Ã¨ node_modules trong container
+      - ./flask-verification-management:/app  
+      - /app/venv  
 
   postgres:
-    # image: dhtverificationmanagement-postgres:latest
     container_name: dht_db_postgres
     image: postgres:latest
     environment:
